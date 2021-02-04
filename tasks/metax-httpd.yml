@@ -1,0 +1,17 @@
+---
+- name: Ensure OIDC module is installed
+  yum:
+    name: mod_auth_openidc
+    state: latest
+  become: yes
+  notify: Restart httpd
+  tags: metax-httpd
+
+- name: Ensure Metax httpd configurations are correct
+  template:
+    src: 'fairdata-metax-httpd.conf.j2'
+    dest: '/etc/httpd/conf.d/{{ nginx_server_name }}.conf'
+    mode: '0644'
+  become: yes
+  notify: Restart httpd
+  tags: metax-httpd

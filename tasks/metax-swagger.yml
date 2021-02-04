@@ -1,0 +1,18 @@
+---
+- name: Build Swagger documentation
+  shell:
+    cmd: '{{ repo_path }}/docs-venv/bin/python swagger-yaml-to-html.py < {{ api_version }}/swagger.yaml > {{ api_version }}/index.html'
+    chdir: '{{ repo_path }}/swagger'
+  become: yes
+  become_user: '{{ application_user }}'
+  tags: metax-docs
+
+- name: Replace Swagger placeholders
+  replace:
+    dest: '{{ repo_path }}/swagger/{{ api_version }}/index.html'
+    regexp: '__METAX_ENV_DOMAIN__'
+    replace: '{{ nginx_server_name }}'
+  no_log: True
+  become: yes
+  become_user: '{{ application_user }}'
+  tags: metax-docs

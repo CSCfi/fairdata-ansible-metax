@@ -1,0 +1,77 @@
+---
+- name: Ensure log directory exist with correct permissions
+  file:
+    path: '{{ directory_log }}'
+    owner: '{{ application_user }}'
+    group: '{{ application_group }}'
+    state: 'directory'
+    mode: '0755'
+  become: yes
+  tags: metax-nginx
+
+- name: Ensure passlib pip package is installed
+  pip:
+    name: 'passlib'
+    state: 'latest'
+    executable: 'pip2'
+  become: yes
+  tags: metax-nginx
+
+- name: Install Metax Nginx auth file
+  htpasswd:
+    path: '/etc/nginx/conf.d/metax_es_users'
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+    owner: root
+    group: nginx
+    state: present
+    mode: 0640
+  with_items:
+   - username: 'metax'
+     password: '{{ application_metax_user_password }}'
+   - username: 'qvain'
+     password: '{{ application_qvain_user_password }}'
+   - username: 'ida'
+     password: '{{ application_ida_user_password }}'
+   - username: 'tpas'
+     password: '{{ application_tpas_user_password }}'
+   - username: 'etsin'
+     password: '{{ application_etsin_user_password }}'
+   - username: 'fds'
+     password: '{{ application_fds_user_password }}'
+   - username: 'qvain-light'
+     password: '{{ application_qvain_light_user_password }}'
+   - username: 'qvain-jori'
+     password: '{{ application_jori_user_password }}'
+   - username: 'ttv'
+     password: '{{ application_ttv_user_password }}'
+  no_log: True
+  become: yes
+  tags: metax-nginx
+
+- name: Install Metax Nginx shared configurations
+  template:
+    src: 'metax-nginx-shared.conf.j2'
+    dest: '/etc/nginx/conf.d/metax-nginx-shared.conf'
+    mode: '0644'
+  become: yes
+  notify: Restart Nginx
+  tags: metax-nginx
+
+- name: Install Metax Nginx virtual server definition
+  template:
+    src: 'fairdata-metax-nginx.conf.j2'
+    dest: '/etc/nginx/sites-available/{{ instance_name }}.{{ instance_domain }}'
+    mode: '0644'
+  become: yes
+  notify: Restart Nginx
+  tags: metax-nginx
+
+- name: Enable Metax Nginx virtual server
+  file:
+    path: '/etc/nginx/sites-enabled/{{ instance_name }}.{{ instance_domain }}'
+    src: '/etc/nginx/sites-available/{{ instance_name }}.{{ instance_domain }}'
+    state: link
+  become: yes
+  notify: Restart Nginx
+  tags: metax-nginx

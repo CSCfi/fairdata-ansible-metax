@@ -1,0 +1,12 @@
+[Unit]
+Description=UNIX socket for Fairdata Metax API
+
+[Socket]
+ListenStream={{ gunicorn_socket }}
+SocketMode=0666
+SocketUser={{ application_user }}
+SocketGroup={{ application_group }}
+RuntimeDirectory=fairdata-metax
+
+[Install]
+WantedBy=sockets.target

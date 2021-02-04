@@ -1,0 +1,47 @@
+---
+- name: Build Sphinx documentation
+  command:
+    cmd: '{{ repo_path }}/docs-venv/bin/sphinx-build -b html -t test {{ repo_path }}/docs/{{ api_version }}/source {{ repo_path }}/docs/{{ api_version }}/build'
+  become: yes
+  become_user: '{{ application_user }}'
+  tags: metax-docs
+
+- name: Register Sphinx output files
+  find:
+    paths: "{{ repo_path }}/docs/{{ api_version }}/build"
+    patterns: "*.html"
+  register: sphinx_output
+  tags: metax-docs
+
+- name: Replace Sphinx documentation Metax environment placeholders
+  replace:
+    dest: '{{ item.path }}'
+    regexp: '__METAX_ENV_DOMAIN__'
+    replace: '{{ nginx_server_name }}'
+  with_items: '{{ sphinx_output.files }}'
+  no_log: True
+  become: yes
+  become_user: '{{ application_user }}'
+  tags: metax-docs
+
+- name: Replace Sphinx documentation Etsin environment placeholders
+  replace:
+    dest: '{{ item.path }}'
+    regexp: '__ETSIN_ENV_BASE_URL__'
+    replace: 'etsin.fd-staging.csc.fi'
+  with_items: '{{ sphinx_output.files }}'
+  no_log: True
+  become: yes
+  become_user: '{{ application_user }}'
+  tags: metax-docs
+
+- name: Replace Sphinx documentation environment placeholders
+  replace:
+    dest: '{{ item.path }}'
+    regexp: '__METAX_ENV_BRANCH__'
+    replace: '{{ repo_version }}'
+  with_items: '{{ sphinx_output.files }}'
+  no_log: True
+  become: yes
+  become_user: '{{ application_user }}'
+  tags: metax-docs

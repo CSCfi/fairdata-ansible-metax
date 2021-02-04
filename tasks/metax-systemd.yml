@@ -1,0 +1,27 @@
+---
+- name: Install Metax API systemd files
+  template:
+    src: '{{ item.file }}.j2'
+    dest: '{{ item.location }}/{{ item.file }}'
+    mode: '0644'
+  with_items:
+  - file: 'fairdata-metax.service'
+    location: '/etc/systemd/system'
+  - file: 'fairdata-metax.socket'
+    location: '/etc/systemd/system'
+  - file: 'fairdata-metax.env'
+    location: '{{ directory_config }}'
+  - file: 'fairdata-metax-gunicorn.py'
+    location: '{{ directory_config }}'
+  become: yes
+  notify: Restart Metax API
+  tags: metax-systemd
+
+- name: Ensure Metax API systemd service is started
+  systemd:
+    name: 'fairdata-metax.service'
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+  tags: metax-systemd

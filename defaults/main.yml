@@ -1,0 +1,146 @@
+---
+# Role control variables
+# ~~~~~~~~~~~~~~~~~~~~~~
+prepare_application: True
+deploy_application: True
+manage_application: True
+run_tests: True
+configure_proxy: True
+
+# Instance variables
+# ~~~~~~~~~~~~~~~~~~
+instance_name: 'metax'
+instance_domain: 'fairdata.fi'
+
+# Directory variables
+# ~~~~~~~~~~~~~~~~~~~
+directory_config: '/etc/fairdata-{{ instance_name }}'
+directory_source_root: '/opt'
+directory_log: '/var/log/fairdata-{{ instance_name }}'
+directory_run: '/run'
+
+# Repository variables
+# ~~~~~~~~~~~~~~~~~~~~
+repo_path: '{{ directory_source_root }}/fairdata-{{ instance_name }}'
+repo_install_method: 'pull'
+repo_url: 'https://github.com/CSCfi/metax-api.git'
+repo_version: 'master'
+repo_deploy_key: '~/.ssh/id_rsa'
+
+# Python virtualenv variables
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+python_virtualenv_command: 'virtualenv'
+python_virtualenv_path: '{{ repo_path }}/venv'
+
+# Database variables
+# ~~~~~~~~~~~~~~~~~~
+database_host: 'localhost'
+database_name: 'metax'
+database_user: 'metax'
+database_password: 'metax'
+
+# Elasticsearch variables
+# ~~~~~~~~~~~~~~~~~~~~~~~
+elasticsearch_hosts: 'localhost'
+elasticsearch_port: 9200
+
+# Redis variables
+# ~~~~~~~~~~~~~~~
+redis_password: 'metax'
+redis_use_password: 'false'
+
+# RabbitMQ variables
+# ~~~~~~~~~~~~~~~~~~
+rabbitmq_hosts: 'localhost'
+rabbitmq_vhost: 'metax'
+rabbitmq_vhost_ttv: 'ttv'
+rabbitmq_user: 'metax'
+rabbitmq_password: 'metax'
+rabbitmq_use_vhost: 'on'
+
+# Application variables
+# ~~~~~~~~~~~~~~~~~~~~~
+application_user: 'metax'
+application_group: 'metax'
+
+application_debug: 'True'
+application_metax_env: 'test'
+application_metax_api_root: 'https://{{ nginx_server_name }}'
+application_django_env: 'test'
+application_django_secret_key: 'secret'
+application_auth_server_logout_url: 'secret'
+application_draft_enabled: 'true'
+application_always_reload_reference_data_on_restart: 'True'
+
+application_oai_base_url: 'https://{{ nginx_server_name }}/oai/'
+application_oai_etsin_url_template: 'https://etsin.{{ instance_domain }}/dataset/%s'
+application_oai_batch_size: 25
+application_oai_repository_name: 'Metax'
+application_oai_admin_email: 'servicedesk@csc.fi'
+
+application_datacite_username: 'user'
+application_datacite_password: 'secret'
+application_datacite_etsin_url_template: 'https://etsin.{{ instance_domain }}/dataset/%s'
+application_datacite_prefix: '55.5555555'
+application_datacite_url: 'https://datacite.example.com'
+
+application_rems_enabled: 'True'
+application_rems_api_key: 555
+application_rems_base_url: 'https://rems.example.com/api'
+application_rems_etsin_url_template: 'https://etsin.{{ instance_domain }}/dataset/%s'
+application_rems_metax_user: 'metax@rems.example.com'
+application_rems_reporter_user: 'reporter@rems.example.com'
+application_rems_auto_approver: 'not-used'
+application_rems_form_id: 555
+
+# User management
+# ~~~~~~~~~~~~~~~
+application_testaaja_consumer_password: 'not_used'
+application_etsin_consumer_password: 'not_used'
+application_ttv_consumer_password: 'not_used'
+
+application_metax_user_password: 'not_used'
+application_qvain_user_password: 'not_used'
+application_ida_user_password: 'not_used'
+application_tpas_user_password: 'not_used'
+application_etsin_user_password: 'not_used'
+application_fds_user_password: 'not_used'
+application_qvain_light_user_password: 'not_used'
+application_jori_user_password: 'not_used'
+application_ttv_user_password: 'not_used'
+application_download_user_password: 'not_used'
+application_jyu_user_password: 'not_used'
+
+application_additional_projects_path: '/home/metax-user/additional_projects.json'
+
+application_att_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-att'
+application_ida_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-ida'
+application_legacy_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-legacy'
+application_pas_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-pas'
+application_dft_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-dft'
+
+# Gunicorn variables
+# ~~~~~~~~~~~~~~~~~~
+gunicorn_socket: '{{ directory_run }}/fairdata-metax/fairdata-metax.sock'
+gunicorn_workers: 1
+gunicorn_threads: 4
+
+# Nginx variables
+# ~~~~~~~~~~~~~~~
+nginx_port: 443
+nginx_server_name: '{{ instance_name }}.{{ instance_domain }}'
+nginx_custom_certificates: False
+nginx_ssl_certificate: ''
+nginx_ssl_certificate_key: ''
+
+# Httpd variables
+# ~~~~~~~~~~~~~~~
+#
+# Examples:
+# oidc_auth_server_url: 'https://example.com'
+# oidc_provider_metadata_url: '{{ oidc_auth_server_url }}/.well-known/openid-configuration'
+# oidc_auth_verify_jwks_uri: '{{ oidc_auth_server_url }}/oidc/keyset.jwk'
+# oidc_client_id: 'fairdata-metax'
+# oidc_client_secret: '<value>'
+# oidc_crypto_passphrase: '<value>'
+# oidc_id_token_iat_slack: '<value>'

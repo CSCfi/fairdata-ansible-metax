@@ -1,0 +1,58 @@
+---
+- name: Ensure Metax user exists
+  user:
+    name: '{{ application_user }}'
+    shell: '/bin/bash'
+  become: yes
+  when: prepare_application
+  tags: metax-user
+
+- name: Include Metax API prerequisites
+  include_tasks: "metax-prerequisites.yml"
+  when: prepare_application
+  tags: metax-prerequisites
+
+- name: Include Metax API repository tasks
+  include_tasks: "metax-repository.yml"
+  when: deploy_application
+  tags: metax-repository
+
+- name: Include Metax API configuration tasks
+  include_tasks: "metax-configuration.yml"
+  when: deploy_application
+  tags: metax-configuration
+
+- name: Include Metax API systemd tasks
+  include_tasks: "metax-systemd.yml"
+  when: deploy_application
+  tags: metax-systemd
+
+- name: Include Metax API manage tasks
+  include_tasks: "metax-manage.yml"
+  when: manage_application
+  tags: metax-manage
+
+- name: Include Metax API documentation tasks
+  include_tasks: "metax-docs.yml"
+  when: deploy_application
+  tags: metax-docs
+
+- name: Include Metax API nginx tasks
+  include_tasks: "metax-nginx.yml"
+  when: configure_proxy
+  tags: metax-nginx
+
+- name: Include Metax API httpd tasks
+  include_tasks: "metax-httpd.yml"
+  when: configure_proxy
+  tags: metax-httpd
+
+- name: Run Metax tests
+  django_manage:
+    command: 'test --keepdb'
+    app_path: '{{ repo_path }}/src'
+    virtualenv: '{{ python_virtualenv_path }}'
+  become: yes
+  become_user: '{{ application_user }}'
+  when: run_tests
+  tags: metax-test
