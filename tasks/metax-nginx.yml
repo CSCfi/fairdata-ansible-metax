@@ -61,7 +61,7 @@
 - name: Install Metax Nginx virtual server definition
   template:
     src: 'fairdata-metax-nginx.conf.j2'
-    dest: '/etc/nginx/sites-available/{{ instance_name }}.{{ instance_domain }}'
+    dest: '/etc/nginx/sites-available/{{ deployment_fqdn }}'
     mode: '0644'
   become: yes
   notify: Restart Nginx
@@ -69,8 +69,8 @@
 
 - name: Enable Metax Nginx virtual server
   file:
-    path: '/etc/nginx/sites-enabled/{{ instance_name }}.{{ instance_domain }}'
-    src: '/etc/nginx/sites-available/{{ instance_name }}.{{ instance_domain }}'
+    path: '/etc/nginx/sites-enabled/{{ deployment_fqdn }}'
+    src: '/etc/nginx/sites-available/{{ deployment_fqdn }}'
     state: link
   become: yes
   notify: Restart Nginx

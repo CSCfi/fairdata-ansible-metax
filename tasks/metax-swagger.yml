@@ -11,7 +11,7 @@
   replace:
     dest: '{{ repo_path }}/swagger/{{ api_version }}/index.html'
     regexp: '__METAX_ENV_DOMAIN__'
-    replace: '{{ nginx_server_name }}'
+    replace: '{{ deployment_fqdn }}'
   no_log: True
   become: yes
   become_user: '{{ application_user }}'

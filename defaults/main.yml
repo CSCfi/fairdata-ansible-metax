@@ -6,22 +6,28 @@ deploy_application: True
 manage_application: True
 run_tests: True
 configure_proxy: True
+delete_deployment: False
+delete_proxy: False
 
-# Instance variables
-# ~~~~~~~~~~~~~~~~~~
-instance_name: 'metax'
+# Deployment variables
+# ~~~~~~~~~~~~~~~~~~~~
 instance_domain: 'fairdata.fi'
+deployment_name: 'metax'
+build_id: '1'
+deployment_fqdn: '{{ deployment_name }}.{{ instance_domain }}'
+instance_name: 'fairdata-{{ deployment_name }}-{{ build_id }}'
 
 # Directory variables
 # ~~~~~~~~~~~~~~~~~~~
-directory_config: '/etc/fairdata-{{ instance_name }}'
+directory_config: '/etc/{{ instance_name }}'
 directory_source_root: '/opt'
-directory_log: '/var/log/fairdata-{{ instance_name }}'
 directory_run: '/run'
+directory_log: '/var/log/{{ instance_name }}'
+directory_venv: '/usr/local/venvs/{{ instance_name }}'
 
 # Repository variables
 # ~~~~~~~~~~~~~~~~~~~~
-repo_path: '{{ directory_source_root }}/fairdata-{{ instance_name }}'
+repo_path: '{{ directory_source_root }}/{{ instance_name }}'
 repo_install_method: 'pull'
 repo_url: 'https://github.com/CSCfi/metax-api.git'
 repo_version: 'master'
@@ -30,7 +36,6 @@ repo_deploy_key: '~/.ssh/id_rsa'
 # Python virtualenv variables
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 python_virtualenv_command: 'virtualenv'
-python_virtualenv_path: '{{ repo_path }}/venv'
 
 # Database variables
 # ~~~~~~~~~~~~~~~~~~
@@ -65,14 +70,14 @@ application_group: 'metax'
 
 application_debug: 'True'
 application_metax_env: 'test'
-application_metax_api_root: 'https://{{ nginx_server_name }}'
+application_metax_api_root: 'https://{{ deployment_fqdn }}'
 application_django_env: 'test'
 application_django_secret_key: 'secret'
 application_auth_server_logout_url: 'secret'
 application_draft_enabled: 'true'
 application_always_reload_reference_data_on_restart: 'True'
 
-application_oai_base_url: 'https://{{ nginx_server_name }}/oai/'
+application_oai_base_url: 'https://{{ deployment_fqdn }}/oai/'
 application_oai_etsin_url_template: 'https://etsin.{{ instance_domain }}/dataset/%s'
 application_oai_batch_size: 25
 application_oai_repository_name: 'Metax'
@@ -121,21 +126,19 @@ application_dft_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-dft'
 
 # Gunicorn variables
 # ~~~~~~~~~~~~~~~~~~
-gunicorn_socket: '{{ directory_run }}/fairdata-metax/fairdata-metax.sock'
+gunicorn_socket: '{{ directory_run }}/{{ instance_name }}.sock'
 gunicorn_workers: 1
 gunicorn_threads: 4
 
 # Nginx variables
 # ~~~~~~~~~~~~~~~
 nginx_port: 443
-nginx_server_name: '{{ instance_name }}.{{ instance_domain }}'
 nginx_custom_certificates: False
 nginx_ssl_certificate: ''
 nginx_ssl_certificate_key: ''
 
-# Httpd variables
-# ~~~~~~~~~~~~~~~
-#
+# OIDC variables
+# ~~~~~~~~~~~~~~
 # Examples:
 # oidc_auth_server_url: 'https://example.com'
 # oidc_provider_metadata_url: '{{ oidc_auth_server_url }}/.well-known/openid-configuration'
@@ -144,3 +147,7 @@ nginx_ssl_certificate_key: ''
 # oidc_client_secret: '<value>'
 # oidc_crypto_passphrase: '<value>'
 # oidc_id_token_iat_slack: '<value>'
+
+# Httpd variables
+# ~~~~~~~~~~~~~~~
+httpd_port: 8080

@@ -37,6 +37,11 @@
   when: deploy_application
   tags: metax-docs
 
+- name: Include Metax API delete tasks
+  include_tasks: "metax-delete.yml"
+  when: delete_deployment or delete_proxy
+  tags: metax-delete
+
 - name: Include Metax API nginx tasks
   include_tasks: "metax-nginx.yml"
   when: configure_proxy
@@ -49,9 +54,9 @@
 
 - name: Run Metax tests
   django_manage:
-    command: 'test --keepdb'
+    command: 'test --failfast --keepdb'
     app_path: '{{ repo_path }}/src'
-    virtualenv: '{{ python_virtualenv_path }}'
+    virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
   when: run_tests

@@ -17,7 +17,7 @@
   replace:
     dest: '{{ item.path }}'
     regexp: '__METAX_ENV_DOMAIN__'
-    replace: '{{ nginx_server_name }}'
+    replace: '{{ deployment_fqdn }}'
   with_items: '{{ sphinx_output.files }}'
   no_log: True
   become: yes

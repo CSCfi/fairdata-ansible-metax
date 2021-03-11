@@ -1,6 +1,6 @@
 [Unit]
 Description=Fairdata Metax API
-Requires=fairdata-metax.socket
+Requires={{ instance_name }}.socket
 After=network.target
 
 [Service]
@@ -9,10 +9,9 @@ User={{ application_user }}
 Group={{ application_group }}
 EnvironmentFile={{ directory_config }}/fairdata-metax.env
 WorkingDirectory={{ repo_path }}/src
-ExecStart=/bin/sh -c '${GUNICORN_BIN} --config ${GUNICORN_CONF} metax_api.wsgi:application'
+ExecStart=/bin/sh -c '{{ directory_venv }}/bin/gunicorn --config {{ directory_config }}/fairdata-metax-gunicorn.py metax_api.wsgi:application'
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
-Restart=always
 
 [Install]
 WantedBy=multi-user.target

@@ -10,7 +10,7 @@
 - name: Ensure Metax httpd configurations are correct
   template:
     src: 'fairdata-metax-httpd.conf.j2'
-    dest: '/etc/httpd/conf.d/{{ nginx_server_name }}.conf'
+    dest: '/etc/httpd/conf.d/{{ deployment_fqdn }}.conf'
     mode: '0644'
   become: yes
   notify: Restart httpd

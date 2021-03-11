@@ -3,7 +3,7 @@
   django_manage:
     command: 'migrate'
     app_path: '{{ repo_path }}/src'
-    virtualenv: '{{ python_virtualenv_path }}'
+    virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
   tags: metax-manage
@@ -12,7 +12,7 @@
   django_manage:
     command: 'index_refdata'
     app_path: '{{ repo_path }}/src'
-    virtualenv: '{{ python_virtualenv_path }}'
+    virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
   tags: metax-manage
@@ -21,7 +21,7 @@
   django_manage:
     command: 'reload_refdata_cache'
     app_path: '{{ repo_path }}/src'
-    virtualenv: '{{ python_virtualenv_path }}'
+    virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
   tags: metax-manage
@@ -30,7 +30,7 @@
   django_manage:
     command: 'loadinitialdata'
     app_path: '{{ repo_path }}/src'
-    virtualenv: '{{ python_virtualenv_path }}'
+    virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
   tags: metax-manage
@@ -39,7 +39,7 @@
   django_manage:
     command: 'loaddata metax_api/tests/testdata/test_data.json'
     app_path: '{{ repo_path }}/src'
-    virtualenv: '{{ python_virtualenv_path }}'
+    virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
   tags: metax-manage
