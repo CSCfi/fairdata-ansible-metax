@@ -1,0 +1,13 @@
+---
+- name: Ensure required yum packages are installed
+  yum:
+    name:
+    - gcc
+    - gcc-c++
+    - git
+    - xqilla
+    - xqilla-devel
+    - python2-pip
+    state: 'latest'
+  become: yes
+  tags: metax-prerequisites

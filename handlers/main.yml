@@ -1,0 +1,26 @@
+---
+- name: Restart Nginx
+  systemd:
+    name: 'nginx'
+    state: 'restarted'
+  become: yes
+
+- name: Restart httpd
+  systemd:
+    name: 'httpd'
+    state: 'restarted'
+  become: yes
+
+- name: Restart Metax API
+  systemd:
+    name: '{{ item }}'
+    state: 'restarted'
+  with_items:
+  - '{{ instance_name }}.service'
+  - '{{ instance_name }}.socket'
+  become: yes
+
+- name: Reload Systemd Daemon
+  systemd:
+    daemon_reload: 'yes'
+  become: yes

@@ -1,0 +1,141 @@
+upstream elasticsearch-{{ deployment_fqdn }} {
+    server {{ elasticsearch_hosts }}:{{ elasticsearch_port }};
+}
+
+map $sent_http_content_type $content_disposition {
+    default                            "attachment; filename=response.json";
+    "text/html"                        "attachment; filename=response.json";
+    "text/html; charset=utf-8"         "attachment; filename=response.json";
+    "application/json"                 "attachment; filename=response.json";
+    "application/json; charset=utf-8"  "attachment; filename=response.json";
+    "application/xml"                  "attachment; filename=response.xml";
+    "application/xml; charset=utf-8"   "attachment; filename=response.xml";
+}
+
+server {
+    listen       {{ nginx_port }} ssl http2;
+    listen       [::]:{{ nginx_port }} ssl http2;
+    server_name  {{ deployment_fqdn }};
+
+    access_log  {{ directory_log }}/metax-nginx-access.log;
+    error_log  {{ directory_log }}/metax-nginx-error.log;
+
+{% if nginx_custom_certificates %}
+    ssl_certificate {{ nginx_ssl_certificate }};
+    ssl_certificate_key {{ nginx_ssl_certificate_key }};
+{% endif %}
+
+    client_max_body_size 5G;
+
+    # Sphinx documentation
+    location /docs {
+        include conf.d/metax-nginx-shared.conf;
+        try_files $uri $uri/ =404;
+
+        return 301 https://{{ deployment_fqdn }}/docs/v1;
+
+        location /docs/v2 {
+            alias {{ repo_path }}/docs/v2/build;
+        }
+
+        location /docs/v1 {
+            alias {{ repo_path }}/docs/v1/build;
+        }
+    }
+
+    # Swagger documentation
+    location /swagger {
+        add_header Cache-Control "public" always;
+        add_header Content-Security-Policy "base-uri 'self'; default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com fonts.gstatic.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' cdnjs.cloudflare.com; object-src 'none';";
+
+        try_files $uri $uri/ =404;
+
+        return 301 https://{{ deployment_fqdn }}/swagger/v1;
+
+        location /swagger/v2 {
+            alias {{ repo_path }}/swagger/v2;
+        }
+
+        location /swagger/v1 {
+            alias {{ repo_path }}/swagger/v1;
+        }
+    }
+
+    # Elasticsearch
+    location /es {
+        include conf.d/metax-nginx-shared.conf;
+
+        proxy_set_header Host {{ deployment_fqdn }};
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        add_header Access-Control-Allow-Origin "*" always;
+        add_header Cache-Control "no-store" always;
+        add_header Content-Disposition "attachment; filename=response.json" always;
+
+        add_header Content-Security-Policy "default-src 'self';";
+
+        location /es/_search {
+            proxy_pass http://elasticsearch-{{ deployment_fqdn }}/_search;
+
+            limit_except GET DELETE {
+                auth_basic 'Credentials Required';
+                auth_basic_user_file /etc/nginx/conf.d/metax_es_users;
+            }
+        }
+
+        location ~ ^/es/(reference_data|organization_data)/_search {
+            rewrite ^/es/(.*)$ /$1 break;
+            proxy_pass http://elasticsearch-{{ deployment_fqdn }};
+
+            limit_except GET HEAD {
+                auth_basic 'Credentials Required';
+                auth_basic_user_file /etc/nginx/conf.d/metax_es_users;
+            }
+        }
+
+        location ~ ^/es/(_mapping|reference_data|organization_data) {
+            # Sends old types of queries to metax, which will parse
+            # the parameters to be compatible with the new ES version
+
+            rewrite ^/es/(.*)$ /rpc/elasticsearchs/map_refdata?$1 break;
+            proxy_pass http://unix:{{ gunicorn_socket }};
+        }
+    }
+
+    # Apache (OIDC)
+    location /secure/ {
+        include conf.d/metax-nginx-shared.conf;
+
+        add_header Cache-Control "no-store" always;
+
+        proxy_set_header Host {{ deployment_fqdn }};
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port {{ nginx_port }};
+
+        proxy_pass http://localhost:{{ httpd_port }}/secure/;
+    }
+
+    # Metax API
+    location ~* ^/(rest|rpc|oai|logout) {
+        include conf.d/metax-nginx-shared.conf;
+
+        proxy_set_header Host {{ deployment_fqdn }};
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        add_header Access-Control-Allow-Origin "*" always;
+        add_header Cache-Control "no-store" always;
+        add_header Content-Disposition "attachment; filename=response.json" always;
+
+        add_header Content-Security-Policy "default-src 'self';";
+
+        proxy_pass http://unix:{{ gunicorn_socket }};
+    }
+
+    # Default to Sphinx documentation
+    location / {
+        return 301 https://{{ deployment_fqdn }}/docs;
+    }
+}

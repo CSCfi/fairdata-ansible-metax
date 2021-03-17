@@ -1,0 +1,36 @@
+Listen {{ httpd_port }}
+
+LoadModule auth_openidc_module modules/mod_auth_openidc.so
+
+<VirtualHost _default_:{{ httpd_port }}>
+  ServerName {{ deployment_fqdn }}
+
+  OIDCProviderMetadataURL {{ oidc_provider_metadata_url }}
+  OIDCOAuthVerifyJwksUri {{ oidc_auth_verify_jwks_uri }}
+  OIDCClientID {{ oidc_client_id }}
+  OIDCClientSecret {{ oidc_client_secret }}
+  OIDCRedirectURI https://{{ deployment_fqdn }}/secure/redirect_uri
+  OIDCCryptoPassphrase {{ oidc_crypto_passphrase }}
+  OIDCResponseType "id_token"
+  OIDCPassIDTokenAs payload serialized
+  OIDCIDTokenIatSlack {{ oidc_id_token_iat_slack }}
+
+  <Location /secure>
+    AuthType openid-connect
+    Require valid-user
+
+    ProxyPass unix://{{ gunicorn_socket }}|http://{{ deployment_fqdn }}/secure/login
+    ProxyPassReverse unix://{{ gunicorn_socket }}|http://{{ deployment_fqdn }}/secure/login
+  </Location>
+
+  <Location /secure/validate_token>
+    # when the app sees a Bearer token, it sends a GET request to this localhost
+    # endpoint, using the same HTTP Auth header. this endpoint only validates
+    # a Bearer id_token, and returns 200 on success, and 403 on failure.
+
+    AuthType oauth20
+    Require valid-user
+    Redirect 200 /
+  </Location>
+
+</VirtualHost>

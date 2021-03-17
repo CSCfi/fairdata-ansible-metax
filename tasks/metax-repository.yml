@@ -1,0 +1,29 @@
+---
+- name: Fetch Metax API repository sources with git
+  git:
+    repo: '{{ repo_url }}'
+    version: '{{ repo_version }}'
+    force: 'yes'
+    key_file: '{{ repo_deploy_key }}'
+    accept_hostkey: 'yes'
+    dest: '{{ repo_path }}'
+  when: repo_install_method == 'pull'
+  become: yes
+  tags: metax-repository
+
+- name: Push local Metax repository
+  copy:
+    src: '{{ repo_src }}'
+    dest: '{{ directory_source_root }}'
+  when: repo_install_method == 'push'
+  tags: metax-repository
+
+- name: Ensure repository directory exists with correct permissions
+  file:
+    path: '{{ repo_path }}'
+    owner: '{{ application_user }}'
+    group: '{{ application_group }}'
+    recurse: 'yes'
+    state: 'directory'
+  become: yes
+  tags: metax-repository

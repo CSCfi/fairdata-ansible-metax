@@ -1,0 +1,36 @@
+---
+- name: Ensure that directories exist with correct permissions
+  file:
+    path: '{{ item }}'
+    owner: '{{ application_user }}'
+    group: '{{ application_group }}'
+    state: 'directory'
+    recurse: 'yes'
+    mode: '0755'
+  with_items:
+  - '{{ directory_venv }}'
+  - '{{ directory_config }}'
+  - '{{ directory_log }}'
+  become: yes
+  tags: metax-configuration
+
+- name: Install Metax API requirements in virtualenv with pip
+  pip:
+    requirements: '{{ repo_path }}/requirements.txt'
+    virtualenv: '{{ directory_venv }}'
+    virtualenv_command: '{{ python_virtualenv_command }}'
+  become: yes
+  become_user: '{{ application_user }}'
+  notify: Restart Metax API
+  tags: metax-configuration
+
+- name: Ensure Metax dotenv file is installed in source repository
+  template:
+    src: 'fairdata-metax.env.j2'
+    dest: '{{ repo_path }}/src/metax_api/settings/.env'
+    owner: '{{ application_user }}'
+    group: '{{ application_group }}'
+    mode: '0644'
+  become: yes
+  notify: Restart Metax API
+  tags: metax-configuration

@@ -1,0 +1,17 @@
+[Unit]
+Description=Fairdata Metax API
+Requires={{ instance_name }}.socket
+After=network.target
+
+[Service]
+Type=notify
+User={{ application_user }}
+Group={{ application_group }}
+EnvironmentFile={{ directory_config }}/fairdata-metax.env
+WorkingDirectory={{ repo_path }}/src
+ExecStart=/bin/sh -c '{{ directory_venv }}/bin/gunicorn --config {{ directory_config }}/fairdata-metax-gunicorn.py metax_api.wsgi:application'
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+
+[Install]
+WantedBy=multi-user.target
