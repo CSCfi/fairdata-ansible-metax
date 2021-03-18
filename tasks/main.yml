@@ -59,5 +59,7 @@
     virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
+  environment:
+    DJANGO_ENV: 'test'
   when: run_tests
   tags: metax-test
