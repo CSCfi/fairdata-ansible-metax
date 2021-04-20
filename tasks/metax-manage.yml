@@ -26,18 +26,19 @@
   become_user: '{{ application_user }}'
   tags: metax-manage
 
-- name: Load Metax initial data
+- name: Load Metax test data
   django_manage:
-    command: 'loadinitialdata'
+    command: 'loaddata metax_api/tests/testdata/test_data.json'
     app_path: '{{ repo_path }}/src'
     virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
+  when: '{{ application_django_env }} != production'
   tags: metax-manage
 
-- name: Load Metax test data
+- name: Load Metax initial data
   django_manage:
-    command: 'loaddata metax_api/tests/testdata/test_data.json'
+    command: 'loadinitialdata'
     app_path: '{{ repo_path }}/src'
     virtualenv: '{{ directory_venv }}'
   become: yes
