@@ -33,7 +33,7 @@
     virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
-  when: '{{ application_django_env }} != production'
+  when: application_django_env != 'production'
   tags: metax-manage
 
 - name: Load Metax initial data
