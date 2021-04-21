@@ -1,7 +1,7 @@
 ---
 - name: Build Sphinx documentation
   command:
-    cmd: '{{ repo_path }}/docs-venv/bin/sphinx-build -b html -t test {{ repo_path }}/docs/{{ api_version }}/source {{ repo_path }}/docs/{{ api_version }}/build'
+    cmd: '{{ repo_path }}/docs-venv/bin/sphinx-build -b html  {{ repo_path }}/docs/{{ api_version }}/source {{ repo_path }}/docs/{{ api_version }}/build'
   become: yes
   become_user: '{{ application_user }}'
   tags: metax-docs
@@ -28,7 +28,7 @@
   replace:
     dest: '{{ item.path }}'
     regexp: '__ETSIN_ENV_BASE_URL__'
-    replace: 'etsin.fd-staging.csc.fi'
+    replace: 'etsin.{{ instance_domain }}'
   with_items: '{{ sphinx_output.files }}'
   no_log: True
   become: yes
