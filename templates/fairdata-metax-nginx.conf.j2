@@ -2,16 +2,6 @@ upstream elasticsearch-{{ deployment_fqdn }} {
     server {{ elasticsearch_hosts }}:{{ elasticsearch_port }};
 }
 
-map $sent_http_content_type $content_disposition {
-    default                            "attachment; filename=response.json";
-    "text/html"                        "attachment; filename=response.json";
-    "text/html; charset=utf-8"         "attachment; filename=response.json";
-    "application/json"                 "attachment; filename=response.json";
-    "application/json; charset=utf-8"  "attachment; filename=response.json";
-    "application/xml"                  "attachment; filename=response.xml";
-    "application/xml; charset=utf-8"   "attachment; filename=response.xml";
-}
-
 server {
     listen       {{ nginx_port }} ssl http2;
     listen       [::]:{{ nginx_port }} ssl http2;
@@ -71,7 +61,6 @@ server {
 
         add_header Access-Control-Allow-Origin "*" always;
         add_header Cache-Control "no-store" always;
-        add_header Content-Disposition "attachment; filename=response.json" always;
 
         add_header Content-Security-Policy "default-src 'self';";
 
@@ -127,7 +116,6 @@ server {
 
         add_header Access-Control-Allow-Origin "*" always;
         add_header Cache-Control "no-store" always;
-        add_header Content-Disposition "attachment; filename=response.json" always;
 
         add_header Content-Security-Policy "default-src 'self';";
 

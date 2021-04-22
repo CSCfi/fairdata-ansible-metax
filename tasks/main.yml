@@ -54,10 +54,12 @@
 
 - name: Run Metax tests
   django_manage:
-    command: 'test --failfast --keepdb'
+    command: 'test --failfast --keepdb --parallel'
     app_path: '{{ repo_path }}/src'
     virtualenv: '{{ directory_venv }}'
   become: yes
   become_user: '{{ application_user }}'
+  environment:
+    DJANGO_ENV: 'test'
   when: run_tests
   tags: metax-test
