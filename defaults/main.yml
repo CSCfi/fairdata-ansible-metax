@@ -69,7 +69,7 @@ rabbitmq_use_vhost: 'on'
 application_user: 'metax'
 application_group: 'metax'
 
-application_additional_projects_path: '/home/metax-user/additional_projects.json'
+application_additional_projects_path: '/home/{{ application_user }}/additional_projects.json'
 application_debug: 'True'
 application_django_env: 'test'
 application_django_secret_key: 'secret'
