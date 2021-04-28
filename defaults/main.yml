@@ -51,6 +51,8 @@ elasticsearch_port: 9200
 
 # Redis variables
 # ~~~~~~~~~~~~~~~
+redis_host: 'localhost'
+redis_port: 6379
 redis_password: 'metax'
 redis_use_password: 'false'
 
