@@ -110,6 +110,7 @@ gunicorn_threads: 4
 # Nginx variables
 # ~~~~~~~~~~~~~~~
 nginx_port: 443
+nginx_status_port: 8181
 nginx_custom_certificates: False
 nginx_ssl_certificate: ''
 nginx_ssl_certificate_key: ''
