@@ -3,6 +3,18 @@ upstream elasticsearch-{{ deployment_fqdn }} {
 }
 
 server {
+    listen {{ nginx_status_port }};
+    server_name 127.0.0.1;
+
+    location /nginx_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+    }
+}
+
+server {
     listen       {{ nginx_port }} ssl http2;
     listen       [::]:{{ nginx_port }} ssl http2;
     server_name  {{ deployment_fqdn }};
@@ -16,6 +28,11 @@ server {
 {% endif %}
 
     client_max_body_size 5G;
+
+    proxy_connect_timeout 1h;
+    proxy_read_timeout 1h;
+    proxy_send_timeout 1h;
+    send_timeout 1h;
 
     # Sphinx documentation
     location /docs {
@@ -48,6 +65,27 @@ server {
 
         location /swagger/v1 {
             alias {{ repo_path }}/swagger/v1;
+        }
+    }
+
+    # Apischemas for Swagger
+    location /apischemas {
+        include conf.d/metax-nginx-shared.conf;
+
+        add_header Access-Control-Allow-Origin "*" always;
+        add_header Cache-Control "no-store" always;
+        add_header Content-Security-Policy "default-src 'self';";
+
+        try_files $uri $uri/ =404;
+
+        return 301 https://{{ deployment_fqdn }}/apischemas/v1;
+
+        location /apischemas/v1 {
+            alias {{ repo_path }}/src/metax_api/api/rest/base/api_schemas/;
+        }
+
+        location /apischemas/v2 {
+            alias {{ repo_path }}/src/metax_api/api/rest/v2/api_schemas/;
         }
     }
 

@@ -34,3 +34,14 @@
   become: yes
   notify: Restart Metax API
   tags: metax-configuration
+
+- name: Ensure Metax api users are defined correctly
+  copy:
+    dest: '{{ directory_config }}/metax_users.json'
+    owner: '{{ application_user }}'
+    group: '{{ application_group }}'
+    mode: '0644'
+    content: '{{ application_api_users | to_nice_json }}'
+  become: yes
+  notify: Restart Metax API
+  tags: metax-configuration

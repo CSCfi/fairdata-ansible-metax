@@ -51,6 +51,8 @@ elasticsearch_port: 9200
 
 # Redis variables
 # ~~~~~~~~~~~~~~~
+redis_host: 'localhost'
+redis_port: 6379
 redis_password: 'metax'
 redis_use_password: 'false'
 
@@ -58,7 +60,6 @@ redis_use_password: 'false'
 # ~~~~~~~~~~~~~~~~~~
 rabbitmq_hosts: 'localhost'
 rabbitmq_vhost: 'metax'
-rabbitmq_vhost_ttv: 'ttv'
 rabbitmq_user: 'metax'
 rabbitmq_password: 'metax'
 rabbitmq_use_vhost: 'on'
@@ -68,13 +69,11 @@ rabbitmq_use_vhost: 'on'
 application_user: 'metax'
 application_group: 'metax'
 
+application_additional_projects_path: '/home/{{ application_user }}/additional_projects.json'
 application_debug: 'True'
-application_metax_env: 'test'
-application_metax_api_root: 'https://{{ deployment_fqdn }}'
-application_django_env: 'test'
+application_django_env: 'unittests'
 application_django_secret_key: 'secret'
 application_auth_server_logout_url: 'secret'
-application_draft_enabled: 'true'
 application_always_reload_reference_data_on_restart: 'True'
 
 application_oai_base_url: 'https://{{ deployment_fqdn }}/oai/'
@@ -89,7 +88,7 @@ application_datacite_etsin_url_template: 'https://etsin.{{ instance_domain }}/da
 application_datacite_prefix: '55.5555555'
 application_datacite_url: 'https://datacite.example.com'
 
-application_rems_enabled: 'True'
+application_rems_enabled: 'False'
 application_rems_api_key: 555
 application_rems_base_url: 'https://rems.example.com/api'
 application_rems_etsin_url_template: 'https://etsin.{{ instance_domain }}/dataset/%s'
@@ -100,29 +99,7 @@ application_rems_form_id: 555
 
 # User management
 # ~~~~~~~~~~~~~~~
-application_testaaja_consumer_password: 'not_used'
-application_etsin_consumer_password: 'not_used'
-application_ttv_consumer_password: 'not_used'
-
-application_metax_user_password: 'not_used'
-application_qvain_user_password: 'not_used'
-application_ida_user_password: 'not_used'
-application_tpas_user_password: 'not_used'
-application_etsin_user_password: 'not_used'
-application_fds_user_password: 'not_used'
-application_qvain_light_user_password: 'not_used'
-application_jori_user_password: 'not_used'
-application_ttv_user_password: 'not_used'
-application_download_user_password: 'not_used'
-application_jyu_user_password: 'not_used'
-
-application_additional_projects_path: '/home/metax-user/additional_projects.json'
-
-application_att_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-att'
-application_ida_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-ida'
-application_legacy_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-legacy'
-application_pas_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-pas'
-application_dft_datacatalog_identifier: 'urn:nbn:fi:att:data-catalog-dft'
+application_api_users: []
 
 # Gunicorn variables
 # ~~~~~~~~~~~~~~~~~~
@@ -133,6 +110,7 @@ gunicorn_threads: 4
 # Nginx variables
 # ~~~~~~~~~~~~~~~
 nginx_port: 443
+nginx_status_port: 8181
 nginx_custom_certificates: False
 nginx_ssl_certificate: ''
 nginx_ssl_certificate_key: ''

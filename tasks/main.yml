@@ -60,6 +60,6 @@
   become: yes
   become_user: '{{ application_user }}'
   environment:
-    DJANGO_ENV: 'test'
+    DJANGO_ENV: 'unittests'
   when: run_tests
   tags: metax-test
