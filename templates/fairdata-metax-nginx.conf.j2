@@ -15,6 +15,16 @@ server {
 }
 
 server {
+    listen 80;
+    server_name {{ deployment_fqdn }};
+
+    access_log  {{ directory_log }}/metax-nginx-access.log;
+    error_log  {{ directory_log }}/metax-nginx-error.log;
+
+    return 301 https://{{ deployment_fqdn }}$request_uri;
+}
+
+server {
     listen       {{ nginx_port }} ssl http2;
     listen       [::]:{{ nginx_port }} ssl http2;
     server_name  {{ deployment_fqdn }};
