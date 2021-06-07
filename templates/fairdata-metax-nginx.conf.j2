@@ -49,15 +49,7 @@ server {
         include conf.d/metax-nginx-shared.conf;
         try_files $uri $uri/ =404;
 
-        return 301 https://{{ deployment_fqdn }}/docs/v1;
-
-        location /docs/v2 {
-            alias {{ repo_path }}/docs/v2/build;
-        }
-
-        location /docs/v1 {
-            alias {{ repo_path }}/docs/v1/build;
-        }
+        alias {{ repo_path }}/docs/api/build;
     }
 
     # Swagger documentation
