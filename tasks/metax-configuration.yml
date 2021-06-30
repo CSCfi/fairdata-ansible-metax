@@ -14,6 +14,14 @@
   become: yes
   tags: metax-configuration
 
+- name: Create logrotation for Metax API logs
+  template:
+    src: 'fairdata-metax-logrotation.conf.j2'
+    dest: '/etc/logrotate.d/{{ instance_name }}'
+    mode: '0644'
+  become: yes
+  tags: metax-configuration
+
 - name: Install Metax API requirements in virtualenv with pip
   pip:
     requirements: '{{ repo_path }}/requirements.txt'

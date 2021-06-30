@@ -1,4 +1,5 @@
-accesslog = '{{ directory_log }}/metax-access.log'
-errorlog = '{{ directory_log }}/metax-error.log'
+accesslog = '{{ directory_log }}/metax-gunicorn-access.log'
+errorlog = '{{ directory_log }}/metax-gunicorn-error.log'
+
 workers = {{ gunicorn_workers }}
 threads = {{ gunicorn_threads }}

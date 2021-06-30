@@ -26,6 +26,7 @@
   - '{{ directory_run }}/{{ instance_name }}.sock'
   - '{{ directory_log }}'
   - '{{ directory_venv }}'
+  - '/etc/logrotate.d/{{ instance_name }}'
   when: delete_deployment
   become: yes
   notify: Reload Systemd Daemon
