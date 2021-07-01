@@ -54,7 +54,7 @@
 
 - name: Run Metax tests
   django_manage:
-    command: 'test --failfast --keepdb --parallel'
+    command: 'test --failfast --parallel --no-input'
     app_path: '{{ repo_path }}/src'
     virtualenv: '{{ directory_venv }}'
   become: yes
