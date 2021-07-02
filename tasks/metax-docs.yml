@@ -19,12 +19,3 @@
   loop_control:
     loop_var: 'api_version'
   tags: metax-docs
-
-- name: Include Swagger tasks
-  include_tasks: 'metax-swagger.yml'
-  loop:
-  - 'v1'
-  - 'v2'
-  loop_control:
-    loop_var: 'api_version'
-  tags: metax-docs
