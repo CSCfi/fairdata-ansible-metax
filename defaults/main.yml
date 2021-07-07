@@ -69,12 +69,12 @@ rabbitmq_use_vhost: 'on'
 application_user: 'metax'
 application_group: 'metax'
 
-application_additional_projects_path: '/home/{{ application_user }}/additional_projects.json'
 application_debug: 'True'
 application_django_env: 'unittests'
 application_django_secret_key: 'secret'
 application_auth_server_logout_url: 'secret'
 application_always_reload_reference_data_on_restart: 'True'
+application_additional_projects: []
 
 application_oai_base_url: 'https://{{ deployment_fqdn }}/oai/'
 application_oai_etsin_url_template: 'https://etsin.{{ instance_domain }}/dataset/%s'
