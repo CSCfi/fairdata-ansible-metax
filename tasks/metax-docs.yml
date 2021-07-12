@@ -6,6 +6,7 @@
     DOMAIN: '{{ deployment_fqdn }}'
     BRANCH: '{{ repo_version }}'
     ETSIN_URL: 'etsin.{{ instance_domain }}'
+    REMS_ENABLED: '{{ application_rems_enabled }}'
   become: yes
   become_user: '{{ application_user }}'
   tags: metax-docs
