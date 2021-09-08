@@ -12,7 +12,8 @@
 - name: Ensure passlib pip package is installed
   pip:
     name: 'passlib'
-    state: 'latest'
+    # state: present, in order not to upgrade any package to an untested version
+    state: present
     executable: 'pip2'
   become: yes
   tags: metax-nginx
