@@ -49,15 +49,7 @@ server {
         include conf.d/metax-nginx-shared.conf;
         try_files $uri $uri/ =404;
 
-        return 301 https://{{ deployment_fqdn }}/docs/v1;
-
-        location /docs/v2 {
-            alias {{ repo_path }}/docs/v2/build;
-        }
-
-        location /docs/v1 {
-            alias {{ repo_path }}/docs/v1/build;
-        }
+        alias {{ repo_path }}/docs/api/build;
     }
 
     # Swagger documentation
@@ -65,16 +57,10 @@ server {
         add_header Cache-Control "public" always;
         add_header Content-Security-Policy "base-uri 'self'; default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com fonts.gstatic.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' cdnjs.cloudflare.com; object-src 'none';";
 
-        try_files $uri $uri/ =404;
-
         return 301 https://{{ deployment_fqdn }}/swagger/v1;
 
-        location /swagger/v2 {
-            alias {{ repo_path }}/swagger/v2;
-        }
-
-        location /swagger/v1 {
-            alias {{ repo_path }}/swagger/v1;
+        location ~ ^/swagger/(v1|v2) {
+            proxy_pass http://unix:{{ gunicorn_socket }};
         }
     }
 

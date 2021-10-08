@@ -8,6 +8,15 @@
   become_user: '{{ application_user }}'
   tags: metax-manage
 
+- name: Index Organization data
+  django_manage:
+    command: 'update_orgs'
+    app_path: '{{ repo_path }}/src'
+    virtualenv: '{{ directory_venv }}'
+  become: yes
+  become_user: '{{ application_user }}'
+  tags: metax-manage
+
 - name: Index Metax refdata
   django_manage:
     command: 'index_refdata'

@@ -1,30 +1,12 @@
 ---
-- name: Install Sphinx build requirements into a separate virtualenv
-  pip:
-    name:
-      - Sphinx==3.1.0
-      - sphinx-autobuild==0.7.1
-      - sphinx-rtd-theme==0.4.3
-    virtualenv: '{{ repo_path }}/docs-venv'
-    virtualenv_command: '{{ python_virtualenv_command }}'
+- name: Build Sphinx documentation
+  command:
+    cmd: '{{ directory_venv }}/bin/sphinx-build -b html {{ repo_path }}/docs/api {{ repo_path }}/docs/api/build'
+  environment:
+    DOMAIN: '{{ deployment_fqdn }}'
+    BRANCH: '{{ repo_version }}'
+    ETSIN_URL: 'etsin.{{ instance_domain }}'
+    REMS_ENABLED: '{{ application_rems_enabled }}'
   become: yes
   become_user: '{{ application_user }}'
-  tags: metax-docs
-
-- name: Include Sphinx tasks
-  include_tasks: 'metax-sphinx.yml'
-  loop:
-  - 'v1'
-  - 'v2'
-  loop_control:
-    loop_var: 'api_version'
-  tags: metax-docs
-
-- name: Include Swagger tasks
-  include_tasks: 'metax-swagger.yml'
-  loop:
-  - 'v1'
-  - 'v2'
-  loop_control:
-    loop_var: 'api_version'
   tags: metax-docs
