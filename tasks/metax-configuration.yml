@@ -31,9 +31,12 @@
 
 - name: Install setuptools to virtualenv with pip
   pip:
-    name: setuptools==59.6.0
+    name: 
+      - setuptools==59.6.0
+      - pip
     virtualenv: '{{ directory_venv }}'
     virtualenv_command: '{{ python_virtualenv_command }}'
+    extra_args: --upgrade
   become: yes
   become_user: '{{ application_user }}'
 
