@@ -25,6 +25,7 @@
 - name: Install setuptools for pip
   pip:
     name: setuptools==59.6.0
+    executable: pip3
   become: yes
   tags: metax-configuration
 
@@ -33,6 +34,7 @@
     requirements: '{{ repo_path }}/requirements.txt'
     virtualenv: '{{ directory_venv }}'
     virtualenv_command: '{{ python_virtualenv_command }}'
+    executable: pip3
   become: yes
   become_user: '{{ application_user }}'
   notify: Restart Metax API
