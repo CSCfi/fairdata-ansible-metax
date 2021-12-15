@@ -29,12 +29,19 @@
   become: yes
   tags: metax-configuration
 
+- name: Install setuptools to virtualenv with pip
+  pip:
+    name: setuptools==59.6.0
+    virtualenv: '{{ directory_venv }}'
+    virtualenv_command: '{{ python_virtualenv_command }}'
+  become: yes
+  become_user: '{{ application_user }}'
+
 - name: Install Metax API requirements in virtualenv with pip
   pip:
     requirements: '{{ repo_path }}/requirements.txt'
     virtualenv: '{{ directory_venv }}'
     virtualenv_command: '{{ python_virtualenv_command }}'
-    executable: pip3
   become: yes
   become_user: '{{ application_user }}'
   notify: Restart Metax API
