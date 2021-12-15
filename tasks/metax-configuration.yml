@@ -22,6 +22,12 @@
   become: yes
   tags: metax-configuration
 
+- name: Install setuptools for pip
+  pip:
+    name: setuptools==59.6.0
+  become: yes
+  tags: metax-configuration
+
 - name: Install Metax API requirements in virtualenv with pip
   pip:
     requirements: '{{ repo_path }}/requirements.txt'
