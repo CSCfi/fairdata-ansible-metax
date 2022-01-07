@@ -96,6 +96,7 @@ application_rems_metax_user: 'metax@rems.example.com'
 application_rems_reporter_user: 'reporter@rems.example.com'
 application_rems_auto_approver: 'not-used'
 application_rems_form_id: 555
+application_rems_organization: 'undefined-rems-org'
 
 application_logging_level: 'INFO'
 
