@@ -13,9 +13,8 @@ delete_proxy: False
 # ~~~~~~~~~~~~~~~~~~~~
 instance_domain: 'fairdata.fi'
 deployment_name: 'metax'
-build_id: '1'
 deployment_fqdn: '{{ deployment_name }}.{{ instance_domain }}'
-instance_name: 'fairdata-{{ deployment_name }}-{{ build_id }}'
+instance_name: 'fairdata-{{ deployment_name }}-{{ repo_version }}'
 
 # Directory variables
 # ~~~~~~~~~~~~~~~~~~~
