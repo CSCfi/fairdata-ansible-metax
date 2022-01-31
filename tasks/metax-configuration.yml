@@ -7,6 +7,7 @@
     state: 'directory'
     recurse: 'yes'
     mode: '0755'
+    force: 'no'
   with_items:
   - '{{ directory_venv }}'
   - '{{ directory_config }}'
