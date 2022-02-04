@@ -13,9 +13,8 @@ delete_proxy: False
 # ~~~~~~~~~~~~~~~~~~~~
 instance_domain: 'fairdata.fi'
 deployment_name: 'metax'
-build_id: '1'
 deployment_fqdn: '{{ deployment_name }}.{{ instance_domain }}'
-instance_name: 'fairdata-{{ deployment_name }}-{{ build_id }}'
+instance_name: 'fairdata-{{ deployment_name }}-{{ repo_version }}'
 
 # Directory variables
 # ~~~~~~~~~~~~~~~~~~~
@@ -96,6 +95,7 @@ application_rems_metax_user: 'metax@rems.example.com'
 application_rems_reporter_user: 'reporter@rems.example.com'
 application_rems_auto_approver: 'not-used'
 application_rems_form_id: 555
+application_rems_organization: 'undefined-rems-org'
 
 application_logging_level: 'INFO'
 
